@@ -1,0 +1,5 @@
+# For random sampling
+numpy
+scipy
+# For Corpus processing
+lxml
