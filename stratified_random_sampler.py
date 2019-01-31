@@ -50,9 +50,14 @@ def stratified_random_sample(elems, sample_size, force_sample_size):
     if random_size != sample_size and force_sample_size:
         # Cut down the extra samples from the last iteration at random
         last_idx = np.where(random_idxs[:, -1].nonzero())[0]
-        n_drop = random_size - sample_size
-        drop_idx = np.random.choice(last_idx, n_drop)
-        random_idxs[drop_idx, -1] = 0
+        # Drop some indices randomly to get closer to the desired sample size
+        np.random.shuffle(last_idx)
+        for idx in last_idx:
+            random_size -= size_mat[idx, i]
+            if random_size > sample_size:
+                random_idxs[idx, -1] = 0
+            else:
+                break
         random_idxs.eliminate_zeros()
     n_for_each_label = random_idxs.getnnz(axis=1)
     random_indices = random_idxs[random_idxs.nonzero()].A1
