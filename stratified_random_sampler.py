@@ -40,11 +40,11 @@ def stratified_random_sample(elems, sample_size, force_sample_size):
 
     # Do the sampling
     random_size = 0
-    i = 1
-    while random_size < sample_size and i < label_mat.shape[1]:
+    i = 0
+    while random_size < sample_size and i + 1 < label_mat.shape[1]:
+        i += 1
         ind = label_mat[:, :i].nonzero()
         random_size = np.sum(size_mat[ind])
-        i += 1
 
     random_idxs = label_mat[:, :i]
     if random_size != sample_size and force_sample_size:
@@ -121,7 +121,8 @@ def main():
         exit(1)
 
     with open(sys.argv[1], encoding='UTF-8') as inp, open(sys.argv[2], 'w', encoding='UTF-8') as out:
-        out.writelines(parse_input_and_sample(inp, int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
+        out.writelines('{0}\n'.format(line)
+                       for line in parse_input_and_sample(inp, int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
 
 
 if __name__ == '__main__':
