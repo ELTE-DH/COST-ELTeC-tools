@@ -121,7 +121,7 @@ def main():
         exit(1)
 
     with open(sys.argv[1], encoding='UTF-8') as inp, open(sys.argv[2], 'w', encoding='UTF-8') as out:
-        out.writelines(parse_input_and_sample(inp, sys.argv[3], sys.argv[4], sys.argv[5]))
+        out.writelines(parse_input_and_sample(inp, int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
 
 
 if __name__ == '__main__':
