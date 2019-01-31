@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8, vim: expandtab:ts=4 -*-
 
+import sys
 import glob
 import locale
 
@@ -16,11 +17,15 @@ def process_xml(inp, used_tools, initialized_tools):
     tree = Etree.parse(inp)
 
     root = tree.getroot()
-
+    doc_ids = set()
     for e in root.iterfind('sample/p'):
         if e.text is None:
             continue
         doc_id = e.attrib['n']
+        if doc_id in doc_ids:
+            print('OMITING DUPLICATE PARAGRAPH  {0}'.format(doc_id), file=sys.stderr)
+            continue
+        doc_ids.add(doc_id)
         # TSV
         pipeline = emtsv.build_pipeline(iter([e.text.replace('­', '').replace('-', '')]), used_tools, initialized_tools)
         header = next(pipeline)
