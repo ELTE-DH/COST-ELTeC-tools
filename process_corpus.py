@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8, vim: expandtab:ts=4 -*-
 
+import os
 import sys
 import glob
 import locale
@@ -15,23 +16,24 @@ write_header = True
 def process_xml(inp, used_tools, initialized_tools):
     global write_header
     tree = Etree.parse(inp)
+    doc_id = os.path.splitext(os.path.basename(inp))[0]
 
     root = tree.getroot()
-    doc_ids = set()
+    par_ids = set()
     for e in root.iterfind('sample/p'):
         if e.text is None:
             continue
-        doc_id = e.attrib['n']
-        if doc_id in doc_ids:
-            print('OMITING DUPLICATE PARAGRAPH  {0}'.format(doc_id), file=sys.stderr)
+        par_id = e.attrib['n']
+        if par_id in par_ids:
+            print('OMITING DUPLICATE PARAGRAPH  {0}'.format(par_id), file=sys.stderr)
             continue
-        doc_ids.add(doc_id)
+        par_ids.add(par_id)
         # TSV
         pipeline = emtsv.build_pipeline(iter([e.text.replace('­', '').replace('-', '')]), used_tools, initialized_tools)
         header = next(pipeline)
         if write_header:
             write_header = False
-            print('doc_id', 'sentence_id', 'id', header, sep='\t', end='')
+            print('doc_id', 'par_id', 'sentence_id', 'id', header, sep='\t', end='')
         sen_count = 1
         tok_count = 1
         for line in pipeline:
@@ -41,7 +43,7 @@ def process_xml(inp, used_tools, initialized_tools):
                 # print() No empty lines on sentence end...
             else:
                 line = line.replace('*** ', '')  # emMorph hack...
-                print(doc_id, sen_count, tok_count, line, sep='\t', end='')
+                print(doc_id, par_id, sen_count, tok_count, line, sep='\t', end='')
                 tok_count += 1
 
 

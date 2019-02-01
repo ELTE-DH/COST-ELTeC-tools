@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8, vim: expandtab:ts=4 -*-
 
-# This is your input, sample size and your labels
 import sys
 from itertools import chain
 
@@ -90,7 +89,7 @@ def parse_input_and_sample(inp_fh, minimum_len, maximum_len, sample_size, force_
         line = line.strip()
         if len(line) == 0:  # Skip empty lines if there are any
             continue
-        curr_doc_id, curr_sent_id = line.split('\t')[0:2]  # Get current document ID (first column)
+        curr_doc_id, _, curr_sent_id = line.split('\t')[0:3]  # Get current document ID (first column)
         if past_doc_id != curr_doc_id or past_sent_id != curr_sent_id:  # The first sentence will be empty!
             sentences.append((doc_count, sentence))
             doc_count += int(past_doc_id != curr_doc_id)  # Only if the document is changed...
